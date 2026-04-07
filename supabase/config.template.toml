@@ -1,0 +1,8 @@
+[auth]
+# Client replaces these values
+site_url = "<YOUR_BASE_URL>"
+
+additional_redirect_urls = [
+  "<YOUR_BASE_URL>/set-password",
+  "<YOUR_BASE_URL>/reset-password"
+]

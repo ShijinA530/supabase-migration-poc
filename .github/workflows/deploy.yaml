@@ -1,0 +1,53 @@
+name: Deploy Supabase Setup
+
+on:
+  push:
+    branches: [main]
+
+  # Allow manual trigger for data import
+  workflow_dispatch:
+    inputs:
+      run_prayertime_import:
+        description: "Run prayertime import?"
+        required: false
+        default: "false"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+
+      - name: Link project
+        run: supabase link --project-ref ${{ secrets.PROJECT_REF }}
+
+      - name: Run migrations
+        run: supabase db migrate deploy
+
+      - name: Deploy functions
+        run: supabase functions deploy --all
+
+      - name: Upload storage files
+        run: node scripts/upload-storage.js
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SERVICE_ROLE_KEY }}
+
+      # Prayertime import (controlled)
+      - name: Import prayertime data
+        if: ${{ github.event.inputs.run_prayertime_import == 'true' }}
+        run: node scripts/import-prayertime.js
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SERVICE_ROLE_KEY }}
