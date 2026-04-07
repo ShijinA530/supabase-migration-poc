@@ -27,7 +27,7 @@ jobs:
         run: npm install
 
       - name: Install Supabase CLI
-        run: npm install -g supabase
+        run: npm install supabase
 
       - name: Link project
         run: supabase link --project-ref ${{ secrets.PROJECT_REF }}
