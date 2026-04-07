@@ -10,7 +10,7 @@ on:
       run_storage_upload:
         description: "Upload storage files?"
         required: false
-        default: "true"
+        default: "false"
       run_prayertime_import:
         description: "Run prayertime import?"
         required: false
