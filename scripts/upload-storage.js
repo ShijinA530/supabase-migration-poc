@@ -27,7 +27,8 @@ async function uploadFile(bucket, filePath, destPath) {
       method: "POST",
       headers: {
         Authorization: `Bearer ${SERVICE_ROLE}`,
-        "Content-Type": contentType, // ✅ FIXED
+        "Content-Type": contentType,
+        "x-upsert": "true",
       },
       body: file,
     }

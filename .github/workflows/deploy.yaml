@@ -7,6 +7,10 @@ on:
   # Allow manual trigger for data import
   workflow_dispatch:
     inputs:
+      run_storage_upload:
+        description: "Upload storage files?"
+        required: false
+        default: "true"
       run_prayertime_import:
         description: "Run prayertime import?"
         required: false
@@ -41,6 +45,7 @@ jobs:
         run: supabase functions deploy --use-api
 
       - name: Upload storage files
+        if: ${{ github.event.inputs.run_storage_upload == 'true' }}
         run: node scripts/upload-storage.js
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
