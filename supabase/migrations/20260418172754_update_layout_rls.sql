@@ -99,12 +99,24 @@ FOR SELECT
 TO public
 USING (true);
 
-CREATE POLICY "Auth users can write"
+CREATE POLICY "Allow all to insert"
 ON public.layout
-FOR ALL
+FOR INSERT
+TO public
+WITH CHECK (true);
+
+CREATE POLICY "Authenticated can update"
+ON public.layout
+FOR UPDATE
 TO authenticated
 USING (auth.uid() IS NOT NULL)
 WITH CHECK (auth.uid() IS NOT NULL);
+
+CREATE POLICY "Authenticated can delete"
+ON public.layout
+FOR DELETE
+TO authenticated
+USING (auth.uid() IS NOT NULL);
 
 ALTER TABLE public.location_postnumber
 ENABLE ROW LEVEL SECURITY;
